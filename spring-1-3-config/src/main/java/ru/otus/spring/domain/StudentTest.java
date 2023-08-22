@@ -17,7 +17,7 @@ public class StudentTest {
 
     private int id;
     private String question;
-    private short correctAnswer;
+    private short rightAnswer;
     private List<String> answers;
 
     public StudentTest() {

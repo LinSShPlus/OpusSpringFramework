@@ -1,9 +1,9 @@
 package ru.otus.spring.printer;
 
 /**
- * Printer
+ * BasePrinter
  **/
-public interface Printer {
+public interface BasePrinter {
 
     void print(Object object);
 

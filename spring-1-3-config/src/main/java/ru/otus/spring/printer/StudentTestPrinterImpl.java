@@ -1,5 +1,6 @@
 package ru.otus.spring.printer;
 
+import org.springframework.stereotype.Component;
 import ru.otus.spring.domain.StudentTest;
 
 import java.util.List;
@@ -8,7 +9,8 @@ import java.util.logging.Logger;
 /**
  * StudentTestPrinterImpl
  **/
-public class StudentTestPrinterImpl implements Printer {
+@Component
+public class StudentTestPrinterImpl implements BasePrinter {
 
     private final Logger logger = Logger.getLogger(getClass().getName());
 
