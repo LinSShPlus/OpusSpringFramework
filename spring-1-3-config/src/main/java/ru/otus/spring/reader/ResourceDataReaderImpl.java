@@ -1,8 +1,9 @@
 package ru.otus.spring.reader;
 
-import lombok.Setter;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import ru.otus.spring.domain.StudentTest;
+import org.springframework.stereotype.Component;
+import ru.otus.spring.config.StudentTestConfig;
 import ru.otus.spring.exception.StudentTestRuntimeException;
 
 import java.io.BufferedReader;
@@ -15,38 +16,28 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * StudentTestReaderImpl
+ * ResourceDataReaderImpl
  **/
-public class StudentTestReaderImpl implements StudentTestReader {
+@RequiredArgsConstructor
+@Component
+public class ResourceDataReaderImpl implements BaseReader<List<String[]>> {
 
     private final Logger logger = Logger.getLogger(getClass().getName());
-
-    @Setter
-    private String fileName;
-    @Setter
-    private String delimiter;
+    private final StudentTestConfig studentTestConfig;
 
     @Override
-    public List<StudentTest> getStudentTest() {
-        List<StudentTest> studentTestList = new ArrayList<>();
+    public List<String[]> read() {
+        List<String[]> dataList = new ArrayList<>();
+        final String fileName = studentTestConfig.getFileName();
+        final String delimiter = studentTestConfig.getDelimiter();
 
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(getInputStream()));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(getInputStream(fileName)));
             String line;
 
             while ((line = reader.readLine()) != null) {
-                StudentTest studentTest = new StudentTest();
                 String[] values = line.split(delimiter);
-
-                for (int i = 0; i < values.length; i++) {
-                    switch (i) {
-                        case 0 -> studentTest.setId(Integer.parseInt(values[i]));
-                        case 1 -> studentTest.setQuestion(values[i]);
-                        case 2 -> studentTest.setCorrectAnswer(Short.parseShort(values[i]));
-                        default -> studentTest.getAnswers().add(values[i]);
-                    }
-                }
-                studentTestList.add(studentTest);
+                dataList.add(values);
             }
             reader.close();
         } catch (StudentTestRuntimeException e) {
@@ -55,10 +46,10 @@ public class StudentTestReaderImpl implements StudentTestReader {
             logger.log(Level.SEVERE, String.format("Error read file %s", fileName), e);
         }
 
-        return studentTestList;
+        return dataList;
     }
 
-    private InputStream getInputStream() {
+    private InputStream getInputStream(String fileName) {
         if (StringUtils.isEmpty(fileName))
             throw new StudentTestRuntimeException("Filename of student test not defined");
         InputStream stream = getClass().getResourceAsStream(fileName);

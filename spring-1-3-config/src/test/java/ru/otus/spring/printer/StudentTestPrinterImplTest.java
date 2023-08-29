@@ -20,7 +20,7 @@ class StudentTestPrinterImplTest {
         StudentTest studentTest = new StudentTest();
         studentTest.setId(1);
         studentTest.setQuestion("Who has invented the electric bulb?");
-        studentTest.setCorrectAnswer((short) 3);
+        studentTest.setRightAnswer((short) 3);
         studentTest.setAnswers(List.of("Rudolf Diesel", "Benjamin Franklin", "Alexander G. Bell", "Thomas Alva Edison"));
 
         java.util.logging.Logger logger = Logger.getLogger(StudentTestPrinterImpl.class.getName());
@@ -30,7 +30,7 @@ class StudentTestPrinterImplTest {
         handler.setLevel(Level.INFO);
         logger.addHandler(handler);
         try {
-            Printer printer = new StudentTestPrinterImpl();
+            BasePrinter printer = new StudentTestPrinterImpl();
             printer.print(List.of(studentTest));
         } finally {
             logger.removeHandler(handler);
