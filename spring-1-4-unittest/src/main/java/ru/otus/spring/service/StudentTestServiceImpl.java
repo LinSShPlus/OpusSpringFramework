@@ -26,6 +26,7 @@ public class StudentTestServiceImpl implements StudentTestService {
     private final BaseReader<List<String[]>> dataReader;
     private final BaseReader<String> inputReader;
     private final BasePrinter printer;
+    private final OutputService outputService;
 
     @Override
     public List<StudentTest> getTest() {
@@ -61,7 +62,7 @@ public class StudentTestServiceImpl implements StudentTestService {
             logger.info("Print student test");
             printer.print(list);
         } else {
-            logger.info("Student test not found");
+            logger.severe("Student tests not found");
         }
     }
 
@@ -70,7 +71,7 @@ public class StudentTestServiceImpl implements StudentTestService {
         AtomicInteger i = new AtomicInteger();
         StringBuilder stringBuilder = new StringBuilder();
         studentTest.getAnswers().forEach(a -> stringBuilder.append(String.format("%n%d. %s", i.incrementAndGet(), a)));
-        logger.info(() -> studentTest.getQuestion() + stringBuilder);
+        outputService.output(studentTest.getQuestion() + stringBuilder);
         return getValidAnswer(i.get());
     }
 
