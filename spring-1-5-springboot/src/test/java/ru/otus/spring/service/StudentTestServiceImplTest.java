@@ -1,15 +1,14 @@
 package ru.otus.spring.service;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import ru.otus.spring.domain.StudentTest;
 import ru.otus.spring.printer.BasePrinter;
 import ru.otus.spring.reader.BaseReader;
-import ru.otus.spring.reader.InputReaderImpl;
-import ru.otus.spring.reader.ResourceDataReaderImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,34 +20,18 @@ import static org.mockito.Mockito.*;
  * StudentTestServiceImplTest
  **/
 @DisplayName("Класс StudentTestServiceImpl")
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 class StudentTestServiceImplTest {
 
+    @MockBean
     private BaseReader<List<String[]>> dataReader;
+    @MockBean
     private BaseReader<String> inputReader;
+    @Qualifier("studentTestPrinter")
+    @MockBean
     private BasePrinter printer;
+    @Autowired
     private StudentTestServiceImpl studentTestService;
-
-    @BeforeEach
-    void setUp() {
-        /* Баг в Mockito, поэтому использовать аннотации @Mock и @InjectMocks для интерфейса BaseReader не получится ->
-           InjectMocks is wrongly injecting the same Mock into 2 different fields of similar type despite creating 2 different mocks.
-
-           https://github.com/mockito/mockito/issues/1056
-           https://github.com/mockito/mockito/issues/1066
-           https://github.com/mockito/mockito/issues/2041
-           https://github.com/mockito/mockito/issues/2921
-           https://github.com/mockito/mockito/issues/2958
-           https://github.com/mockito/mockito/issues/3093
-           https://github.com/mockito/mockito/pull/2923
-         */
-
-        dataReader = mock(ResourceDataReaderImpl.class);
-        inputReader = mock(InputReaderImpl.class);
-        printer = mock(BasePrinter.class);
-        OutputService outputService = mock(OutputService.class);
-        studentTestService = new StudentTestServiceImpl(dataReader, inputReader, printer, outputService);
-    }
 
     @DisplayName("должен вывести вопросы для тестирования студентов")
     @Test

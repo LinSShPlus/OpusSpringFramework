@@ -1,6 +1,7 @@
 package ru.otus.spring.printer;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import ru.otus.spring.domain.StudentTest;
 import ru.otus.spring.service.OutputService;
@@ -10,6 +11,7 @@ import java.util.List;
 /**
  * StudentTestPrinterImpl
  **/
+@Qualifier("studentTestPrinter")
 @RequiredArgsConstructor
 @Component
 public class StudentTestPrinterImpl implements BasePrinter {

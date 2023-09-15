@@ -1,0 +1,12 @@
+application:
+  locale: ru_RU
+  fileName:
+    en: /StudentTest.csv
+    ru_RU: /StudentTest_ru_RU.csv
+  delimiter: \|
+  allAnswersCount: 5
+  minAnswersCount: 4
+
+spring:
+  messages:
+    basename: i18n/messages

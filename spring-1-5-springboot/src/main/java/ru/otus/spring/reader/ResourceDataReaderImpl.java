@@ -3,8 +3,9 @@ package ru.otus.spring.reader;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
-import ru.otus.spring.config.StudentTestConfig;
+import ru.otus.spring.config.AppConfig;
 import ru.otus.spring.exception.StudentTestRuntimeException;
+import ru.otus.spring.utils.I18nUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -23,13 +24,14 @@ import java.util.logging.Logger;
 public class ResourceDataReaderImpl implements BaseReader<List<String[]>> {
 
     private final Logger logger = Logger.getLogger(getClass().getName());
-    private final StudentTestConfig studentTestConfig;
+    private final AppConfig appConfig;
+    private final I18nUtils i18nUtils;
 
     @Override
     public List<String[]> read() {
         List<String[]> dataList = new ArrayList<>();
-        final String fileName = studentTestConfig.getFileName();
-        final String delimiter = studentTestConfig.getDelimiter();
+        final String fileName = appConfig.getFileName().getOrDefault(i18nUtils.getLocale(), "");
+        final String delimiter = appConfig.getDelimiter();
 
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(getInputStream(fileName)));
@@ -43,7 +45,7 @@ public class ResourceDataReaderImpl implements BaseReader<List<String[]>> {
         } catch (StudentTestRuntimeException e) {
             logger.severe(e.getMessage());
         } catch (IOException e) {
-            logger.log(Level.SEVERE, String.format("Error read file %s", fileName), e);
+            logger.log(Level.SEVERE, i18nUtils.getMessage("error.readFile", fileName), e);
         }
 
         return dataList;
@@ -51,10 +53,10 @@ public class ResourceDataReaderImpl implements BaseReader<List<String[]>> {
 
     private InputStream getInputStream(String fileName) {
         if (StringUtils.isEmpty(fileName))
-            throw new StudentTestRuntimeException("Filename of student test not defined");
+            throw new StudentTestRuntimeException(i18nUtils.getMessage("error.testFileNameNotDefined"));
         InputStream stream = getClass().getResourceAsStream(fileName);
         if (stream == null)
-            throw new StudentTestRuntimeException(String.format("Error read file %s", fileName));
+            throw new StudentTestRuntimeException(i18nUtils.getMessage("error.readFile", fileName));
         return stream;
     }
 

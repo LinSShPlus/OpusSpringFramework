@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.otus.spring.domain.Student;
 import ru.otus.spring.reader.BaseReader;
+import ru.otus.spring.utils.I18nUtils;
 
 import java.util.logging.Logger;
 
@@ -16,12 +17,13 @@ public class StudentServiceImpl implements StudentService {
 
     private final Logger logger = Logger.getLogger(getClass().getName());
     private final BaseReader<String> inputReader;
+    private final I18nUtils i18nUtils;
 
     @Override
     public Student getStudent() {
-        logger.info("Enter the first name of the student");
+        logger.info(() -> i18nUtils.getMessage("input.firstName"));
         String firstName = inputReader.read();
-        logger.info("Enter the last name of the student");
+        logger.info(() -> i18nUtils.getMessage("input.lastName"));
         String lastName = inputReader.read();
         return Student
                 .builder()
