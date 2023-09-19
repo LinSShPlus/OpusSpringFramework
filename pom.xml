@@ -16,6 +16,7 @@
         <module>spring-1-3-config</module>
         <module>spring-1-4-unittest</module>
         <module>spring-1-5-springboot</module>
+        <module>spring-1-7-springshell</module>
     </modules>
 
     <properties>
