@@ -1,11 +1,13 @@
 package ru.otus.spring.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import ru.otus.spring.domain.StudentTest;
 import ru.otus.spring.printer.BasePrinter;
 import ru.otus.spring.reader.BaseReader;
+import ru.otus.spring.utils.I18nUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,8 +27,10 @@ public class StudentTestServiceImpl implements StudentTestService {
     private final Random random = new Random();
     private final BaseReader<List<String[]>> dataReader;
     private final BaseReader<String> inputReader;
+    @Qualifier("studentTestPrinter")
     private final BasePrinter printer;
     private final OutputService outputService;
+    private final I18nUtils i18nUtils;
 
     @Override
     public List<StudentTest> getTest() {
@@ -50,19 +54,21 @@ public class StudentTestServiceImpl implements StudentTestService {
 
     @Override
     public List<StudentTest> getTest(List<StudentTest> list, int count) {
-        IntStream stream = random.ints(0, list.size()).distinct().limit(count);
         List<StudentTest> result = new ArrayList<>();
-        stream.forEach(n -> result.add(list.get(n)));
+        if (!CollectionUtils.isEmpty(list)) {
+            IntStream stream = random.ints(0, list.size()).distinct().limit(count);
+            stream.forEach(n -> result.add(list.get(n)));
+        }
         return result;
     }
 
     @Override
     public void printTest(List<StudentTest> list) {
         if (!CollectionUtils.isEmpty(list)) {
-            logger.info("Print student test");
+            logger.info(() -> i18nUtils.getMessage("output.printTest"));
             printer.print(list);
         } else {
-            logger.severe("Student tests not found");
+            logger.severe(() -> i18nUtils.getMessage("error.testNotFound"));
         }
     }
 
@@ -84,7 +90,7 @@ public class StudentTestServiceImpl implements StudentTestService {
                     throw new NumberFormatException();
                 break;
             } catch (NumberFormatException e) {
-                logger.severe("Answer is not valid. Try again.");
+                logger.severe(i18nUtils.getMessage("error.invalidAnswer"));
             }
         }
         return answer;

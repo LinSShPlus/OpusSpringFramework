@@ -2,15 +2,16 @@ package ru.otus.spring.service;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import ru.otus.spring.config.StudentTestConfig;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import ru.otus.spring.config.AppConfig;
 import ru.otus.spring.domain.Exam;
 import ru.otus.spring.domain.Student;
 import ru.otus.spring.domain.StudentTest;
+import ru.otus.spring.printer.BasePrinter;
 
 import java.util.List;
 
@@ -21,18 +22,21 @@ import static org.mockito.Mockito.*;
  * ExamServiceImplTest
  **/
 @DisplayName("Класс ExamServiceImpl")
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 class ExamServiceImplTest {
 
-    @Mock
+    @MockBean
     private StudentTestService studentTestService;
-    @Mock
+    @MockBean
     private StudentService studentService;
-    @Mock
-    private StudentTestConfig studentTestConfig;
-    @Mock
+    @MockBean
+    private AppConfig appConfig;
+    @MockBean
     private OutputService outputService;
-    @InjectMocks
+    @Qualifier("examPrinter")
+    @MockBean
+    private BasePrinter printer;
+    @Autowired
     private ExamServiceImpl examService;
 
     @DisplayName("студент должен успешно пройти экзамен")
@@ -42,8 +46,8 @@ class ExamServiceImplTest {
         int minAnswersCount = 2;
         List<StudentTest> studentTestList = createStudentTestList();
 
-        when(studentTestConfig.getAllAnswersCount()).thenReturn(allAnswersCount);
-        when(studentTestConfig.getMinAnswersCount()).thenReturn(minAnswersCount);
+        when(appConfig.getAllAnswersCount()).thenReturn(allAnswersCount);
+        when(appConfig.getMinAnswersCount()).thenReturn(minAnswersCount);
         when(studentService.getStudent()).thenReturn(createStudent());
         when(studentTestService.getTest()).thenReturn(studentTestList);
         when(studentTestService.getTest(anyList(), anyInt())).thenReturn(studentTestList);
@@ -52,7 +56,7 @@ class ExamServiceImplTest {
 
         examService.runExam();
 
-        verify(outputService).output(objectCaptor.capture());
+        verify(printer).print(objectCaptor.capture());
         assertEquals(objectCaptor.getValue(), createExam(allAnswersCount, minAnswersCount, 2));
     }
 
@@ -63,8 +67,8 @@ class ExamServiceImplTest {
         int minAnswersCount = 2;
         List<StudentTest> studentTestList = createStudentTestList();
 
-        when(studentTestConfig.getAllAnswersCount()).thenReturn(allAnswersCount);
-        when(studentTestConfig.getMinAnswersCount()).thenReturn(minAnswersCount);
+        when(appConfig.getAllAnswersCount()).thenReturn(allAnswersCount);
+        when(appConfig.getMinAnswersCount()).thenReturn(minAnswersCount);
         when(studentService.getStudent()).thenReturn(createStudent());
         when(studentTestService.getTest()).thenReturn(studentTestList);
         when(studentTestService.getTest(anyList(), anyInt())).thenReturn(studentTestList);
@@ -73,7 +77,7 @@ class ExamServiceImplTest {
 
         examService.runExam();
 
-        verify(outputService).output(objectCaptor.capture());
+        verify(printer).print(objectCaptor.capture());
         assertEquals(objectCaptor.getValue(), createExam(allAnswersCount, minAnswersCount, 0));
     }
 

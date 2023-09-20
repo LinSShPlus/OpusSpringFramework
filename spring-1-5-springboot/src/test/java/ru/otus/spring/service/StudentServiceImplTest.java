@@ -2,10 +2,9 @@ package ru.otus.spring.service;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import ru.otus.spring.domain.Student;
 import ru.otus.spring.reader.BaseReader;
 
@@ -16,12 +15,12 @@ import static org.mockito.Mockito.*;
  * StudentServiceImplTest
  **/
 @DisplayName("Класс StudentServiceImpl")
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 class StudentServiceImplTest {
 
-    @Mock
+    @MockBean
     private BaseReader<String> inputReader;
-    @InjectMocks
+    @Autowired
     private StudentServiceImpl studentService;
 
     @DisplayName("должен прочитать имя и фамилию студента")
