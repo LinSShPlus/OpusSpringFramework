@@ -9,7 +9,6 @@ import ru.otus.spring.domain.StudentTest;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Logger;
 
 /**
  * ExamServiceImpl
@@ -18,10 +17,10 @@ import java.util.logging.Logger;
 @Service
 public class ExamServiceImpl implements ExamService {
 
-    private final Logger logger = Logger.getLogger(getClass().getName());
     private final StudentTestService studentTestService;
     private final StudentService studentService;
     private final StudentTestConfig studentTestConfig;
+    private final OutputService outputService;
 
     @Override
     public void runExam() {
@@ -44,7 +43,7 @@ public class ExamServiceImpl implements ExamService {
         exam.setWrongAnswersCount(allAnswersCount - rightAnswersCount.get());
         exam.setPassed(rightAnswersCount.get() >= minAnswersCount);
 
-        logger.info(exam::toString);
+        outputService.output(exam);
     }
 
 }

@@ -1,5 +1,6 @@
 package ru.otus.spring.reader;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.util.CollectionUtils;
 import ru.otus.spring.config.StudentTestConfig;
@@ -11,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 /**
  * ResourceDataReaderImplTest
  **/
+@DisplayName("Класс ResourceDataReaderImpl")
 class ResourceDataReaderImplTest {
 
     private final StudentTestConfig studentTestConfig;
@@ -24,6 +26,7 @@ class ResourceDataReaderImplTest {
         );
     }
 
+    @DisplayName("должен прочитать вопросы для тестирования студентов из CSV-файла")
     @Test
     void getStudentTest() {
         ResourceDataReaderImpl reader = new ResourceDataReaderImpl(studentTestConfig);

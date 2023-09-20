@@ -1,20 +1,16 @@
 package ru.otus.spring.domain;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 /**
  * Student
  **/
-@ToString
 @Builder
-@Getter
-@Setter
+@Data
+@RequiredArgsConstructor
 public class Student {
 
-    private String firstName;
-    private String lastName;
+    private final String firstName;
+    private final String lastName;
 
 }

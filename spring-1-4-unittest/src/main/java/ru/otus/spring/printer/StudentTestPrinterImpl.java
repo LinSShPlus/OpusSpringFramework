@@ -1,18 +1,20 @@
 package ru.otus.spring.printer;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.otus.spring.domain.StudentTest;
+import ru.otus.spring.service.OutputService;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * StudentTestPrinterImpl
  **/
+@RequiredArgsConstructor
 @Component
 public class StudentTestPrinterImpl implements BasePrinter {
 
-    private final Logger logger = Logger.getLogger(getClass().getName());
+    private final OutputService outputService;
 
     public void print(Object object) {
         if (object instanceof List<?>) {
@@ -21,7 +23,7 @@ public class StudentTestPrinterImpl implements BasePrinter {
                     .filter(StudentTest.class::isInstance)
                     .map(StudentTest.class::cast)
                     .toList()
-                    .forEach(st -> logger.info(st.toString()));
+                    .forEach(st -> outputService.output(st.toString()));
         }
     }
 

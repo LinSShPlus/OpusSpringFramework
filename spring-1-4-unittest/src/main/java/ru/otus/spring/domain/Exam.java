@@ -1,15 +1,11 @@
 package ru.otus.spring.domain;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
 /**
  * Exam
  **/
-@ToString
-@Getter
-@Setter
+@Data
 public class Exam {
 
     private Student student;
