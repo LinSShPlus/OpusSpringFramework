@@ -17,6 +17,7 @@
         <module>spring-1-4-unittest</module>
         <module>spring-1-5-springboot</module>
         <module>spring-1-7-springshell</module>
+        <module>spring-1-8-springjdbc</module>
     </modules>
 
     <properties>
