@@ -1,7 +1,12 @@
 spring:
   datasource:
-    url: jdbc:h2:mem:librarydb
-    data: data.sql
+    url: jdbc:h2:mem:testdb
+    data: test-data.sql
+    initialization-mode: always
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
   shell:
     interactive:
       enabled: false

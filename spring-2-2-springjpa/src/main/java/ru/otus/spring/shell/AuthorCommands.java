@@ -28,7 +28,7 @@ public class AuthorCommands {
                 .lastName(lastName)
                 .firstName(firstName)
                 .build();
-        return String.format("Create a author with id = %d%n", authorService.insert(author));
+        return String.format("Create a author with id = %d%n", authorService.save(author));
     }
 
     @ShellMethod(value = "Update the author", key = {"au", "updateAuthor"})
@@ -40,8 +40,8 @@ public class AuthorCommands {
                 .lastName(lastName)
                 .firstName(firstName)
                 .build();
-        int rows = authorService.update(author);
-        if (rows == 1)
+        long actualId = authorService.save(author);
+        if (actualId > 0)
             return String.format("Update the author with id = %d%n", id);
         else
             return String.format("The author with id = %d is not found%n", id);
@@ -58,7 +58,7 @@ public class AuthorCommands {
 
     @ShellMethod(value = "Get a author by id", key = {"ag", "getAuthor"})
     public String getAuthorById(long id) {
-        Author author = authorService.getById(id);
+        Author author = authorService.getById(id).orElse(null);
         return String.format("%s%n", author);
     }
 

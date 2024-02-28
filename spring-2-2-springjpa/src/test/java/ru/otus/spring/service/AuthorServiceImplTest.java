@@ -10,6 +10,7 @@ import ru.otus.spring.dao.AuthorDao;
 import ru.otus.spring.domain.Author;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -32,30 +33,31 @@ class AuthorServiceImplTest {
     @Test
     void insert() {
         Author author = createAuthor();
-        when(authorDao.insert(author)).thenReturn(EXPECTED_AUTHOR_ID);
-        assertThat(authorService.insert(author)).isEqualTo(EXPECTED_AUTHOR_ID);
+        when(authorDao.save(author)).thenReturn(author);
+        assertThat(authorService.save(author)).isEqualTo(author.getId());
     }
 
     @DisplayName("Должен обновить автора")
     @Test
     void update() {
         Author author = createAuthor();
-        when(authorDao.update(author)).thenReturn(1);
-        assertThat(authorService.update(author)).isEqualTo(1);
+        when(authorDao.save(author)).thenReturn(author);
+        assertThat(authorService.save(author)).isEqualTo(author.getId());
     }
 
     @DisplayName("Должен удалить автора по идентификатору")
     @Test
     void deleteById() {
-        when(authorDao.deleteById(EXPECTED_AUTHOR_ID)).thenReturn(1);
-        assertThat(authorService.deleteById(EXPECTED_AUTHOR_ID)).isEqualTo(1);
+        final int rows = 1;
+        when(authorDao.deleteById(EXPECTED_AUTHOR_ID)).thenReturn(rows);
+        assertThat(authorService.deleteById(EXPECTED_AUTHOR_ID)).isEqualTo(rows);
     }
 
     @DisplayName("Должен получить автора по идентификатору")
     @Test
     void getById() {
-        Author author = createAuthor();
-        when(authorDao.getById(EXPECTED_AUTHOR_ID)).thenReturn(author);
+        Optional<Author> author = Optional.of(createAuthor());
+        when(authorDao.findById(EXPECTED_AUTHOR_ID)).thenReturn(author);
         assertThat(authorService.getById(EXPECTED_AUTHOR_ID)).isEqualTo(author);
     }
 
@@ -63,7 +65,7 @@ class AuthorServiceImplTest {
     @Test
     void getByBrief() {
         Author author = createAuthor();
-        when(authorDao.getByBrief(author.getBrief())).thenReturn(author);
+        when(authorDao.findByBrief(author.getBrief())).thenReturn(author);
         assertThat(authorService.getByBrief(author.getBrief())).isEqualTo(author);
     }
 
@@ -71,14 +73,14 @@ class AuthorServiceImplTest {
     @Test
     void getAll() {
         List<Author> authors = List.of(createAuthor());
-        when(authorDao.getAll()).thenReturn(authors);
+        when(authorDao.findAll()).thenReturn(authors);
         assertThat(authorService.getAll()).isEqualTo(authors);
     }
 
     private Author createAuthor() {
         return Author
                 .builder()
-                .id(1L)
+                .id(EXPECTED_AUTHOR_ID)
                 .brief("Ivanov I.")
                 .lastName("Ivanov")
                 .firstName("Ivan")

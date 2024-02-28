@@ -6,6 +6,7 @@ import ru.otus.spring.dao.GenreDao;
 import ru.otus.spring.domain.Genre;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * GenreServiceImpl
@@ -17,13 +18,8 @@ public class GenreServiceImpl implements GenreService {
     private final GenreDao genreDao;
 
     @Override
-    public long insert(Genre genre) {
-        return genreDao.insert(genre);
-    }
-
-    @Override
-    public int update(Genre genre) {
-        return genreDao.update(genre);
+    public long save(Genre genre) {
+        return genreDao.save(genre).getId();
     }
 
     @Override
@@ -32,18 +28,18 @@ public class GenreServiceImpl implements GenreService {
     }
 
     @Override
-    public Genre getById(long id) {
-        return genreDao.getById(id);
+    public Optional<Genre> getById(long id) {
+        return genreDao.findById(id);
     }
 
     @Override
     public Genre getByBrief(String brief) {
-        return genreDao.getByBrief(brief);
+        return genreDao.findByBrief(brief);
     }
 
     @Override
     public List<Genre> getAll() {
-        return genreDao.getAll();
+        return genreDao.findAll();
     }
 
 }

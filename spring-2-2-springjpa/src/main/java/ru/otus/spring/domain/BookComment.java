@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 /**
- * Genre
+ * BookComment
  **/
 @ToString
 @Builder
@@ -13,17 +13,18 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "genre")
-public class Genre {
+@Table(name = "book_comment")
+public class BookComment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "brief", nullable = false, unique = true)
-    private String brief;
+    @Column(name = "comment", nullable = false)
+    private String comment;
 
-    @Column(name = "name", nullable = false)
-    private String name;
+    @ManyToOne
+    @JoinColumn(name = "book_id", nullable = false)
+    private Book book;
 
 }

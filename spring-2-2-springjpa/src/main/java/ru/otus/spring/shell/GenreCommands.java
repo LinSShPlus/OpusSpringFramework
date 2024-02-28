@@ -27,7 +27,7 @@ public class GenreCommands {
                 .brief(brief)
                 .name(name)
                 .build();
-        return String.format("Create a genre with id = %d%n", genreService.insert(genre));
+        return String.format("Create a genre with id = %d%n", genreService.save(genre));
     }
 
     @ShellMethod(value = "Update the genre", key = {"gu", "updateGenre"})
@@ -38,8 +38,8 @@ public class GenreCommands {
                 .brief(brief)
                 .name(name)
                 .build();
-        int rows = genreService.update(genre);
-        if (rows == 1)
+        long actualId = genreService.save(genre);
+        if (actualId > 0)
             return String.format("Update the genre with id = %d%n", id);
         else
             return String.format("The genre with id = %d is not found%n", id);
@@ -56,7 +56,7 @@ public class GenreCommands {
 
     @ShellMethod(value = "Get a genre by id", key = {"gg", "getGenre"})
     public String getGenreById(long id) {
-        Genre genre = genreService.getById(id);
+        Genre genre = genreService.getById(id).orElse(null);
         return String.format("%s%n", genre);
     }
 

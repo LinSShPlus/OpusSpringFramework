@@ -6,6 +6,7 @@ import ru.otus.spring.dao.AuthorDao;
 import ru.otus.spring.domain.Author;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * AuthorServiceImpl
@@ -17,13 +18,8 @@ public class AuthorServiceImpl implements AuthorService {
     private final AuthorDao authorDao;
 
     @Override
-    public long insert(Author author) {
-        return authorDao.insert(author);
-    }
-
-    @Override
-    public int update(Author author) {
-        return authorDao.update(author);
+    public long save(Author author) {
+        return authorDao.save(author).getId();
     }
 
     @Override
@@ -32,18 +28,18 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public Author getById(long id) {
-        return authorDao.getById(id);
+    public Optional<Author> getById(long id) {
+        return authorDao.findById(id);
     }
 
     @Override
     public Author getByBrief(String brief) {
-        return authorDao.getByBrief(brief);
+        return authorDao.findByBrief(brief);
     }
 
     @Override
     public List<Author> getAll() {
-        return authorDao.getAll();
+        return authorDao.findAll();
     }
 
 }
