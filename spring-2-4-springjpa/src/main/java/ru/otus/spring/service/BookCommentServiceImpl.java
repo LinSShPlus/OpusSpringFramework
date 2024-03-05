@@ -2,7 +2,8 @@ package ru.otus.spring.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.otus.spring.dao.BookCommentDao;
+import org.springframework.transaction.annotation.Transactional;
+import ru.otus.spring.dao.BookCommentRepository;
 import ru.otus.spring.domain.BookComment;
 
 import java.util.List;
@@ -15,26 +16,30 @@ import java.util.Optional;
 @Service
 public class BookCommentServiceImpl implements BookCommentService {
 
-    private final BookCommentDao bookCommentDao;
+    private final BookCommentRepository bookCommentRepository;
 
+    @Transactional
     @Override
     public long save(BookComment bookComment) {
-        return bookCommentDao.save(bookComment).getId();
+        return bookCommentRepository.save(bookComment).getId();
     }
 
+    @Transactional
     @Override
-    public int deleteById(long id) {
-        return bookCommentDao.deleteById(id);
+    public void deleteById(long id) {
+        bookCommentRepository.deleteById(id);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Optional<BookComment> getById(long id) {
-        return bookCommentDao.findById(id);
+        return bookCommentRepository.findById(id);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<BookComment> getByBookId(long bookId) {
-        return bookCommentDao.findByBookId(bookId);
+        return bookCommentRepository.findByBookId(bookId);
     }
 
 }

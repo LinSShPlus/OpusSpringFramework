@@ -12,7 +12,7 @@ public interface BookService {
 
     long save(Book book);
 
-    int deleteById(long id);
+    void deleteById(long id);
 
     Optional<Book> getById(long id);
 

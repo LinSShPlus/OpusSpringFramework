@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
 import ru.otus.spring.domain.Author;
 
@@ -15,18 +14,17 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * AuthorDaoJpaTest
+ * AuthorRepositoryTest
  **/
-@DisplayName("Класс AuthorDaoJpa")
+@DisplayName("Класс AuthorRepository")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @DataJpaTest
-@Import(AuthorDaoJpa.class)
-class AuthorDaoJpaTest {
+class AuthorRepositoryTest {
 
     private static final long EXPECTED_AUTHOR_ID = 1L;
 
     @Autowired
-    private AuthorDaoJpa dao;
+    private AuthorRepository repository;
 
     @Autowired
     private TestEntityManager em;
@@ -35,7 +33,7 @@ class AuthorDaoJpaTest {
     @Test
     void insert() {
         Author author = getNewAuthor();
-        Long id = dao.save(author).getId();
+        Long id = repository.save(author).getId();
         assertThat(id).isNotNull().isPositive();
     }
 
@@ -43,22 +41,24 @@ class AuthorDaoJpaTest {
     @Test
     void update() {
         Author expectedAuthor = getExistAuthor();
-        Author actualAuthor = dao.save(expectedAuthor);
+        Author actualAuthor = repository.save(expectedAuthor);
         assertThat(actualAuthor).usingRecursiveComparison().isEqualTo(expectedAuthor);
     }
 
     @DisplayName("Удалить автора по идентификатору")
     @Test
     void deleteById() {
-        int rows = dao.deleteById(EXPECTED_AUTHOR_ID);
-        assertThat(rows).isEqualTo(1);
+        repository.deleteById(EXPECTED_AUTHOR_ID);
+        em.flush();
+        Author actualAuthor = em.find(Author.class, EXPECTED_AUTHOR_ID);
+        assertThat(actualAuthor).isNull();
     }
 
     @DisplayName("Вернуть автора по идентификатору")
     @Test
     void findById() {
         Author expectedAuthor = getExistAuthor();
-        Optional<Author> optionalActualAuthor = dao.findById(expectedAuthor.getId());
+        Optional<Author> optionalActualAuthor = repository.findById(expectedAuthor.getId());
         assertThat(optionalActualAuthor).isPresent().usingRecursiveComparison().isEqualTo(Optional.of(expectedAuthor));
     }
 
@@ -66,14 +66,14 @@ class AuthorDaoJpaTest {
     @Test
     void findByBrief() {
         Author expectedAuthor = getExistAuthor();
-        Author actualAuthor = dao.findByBrief(expectedAuthor.getBrief());
+        Author actualAuthor = repository.findByBrief(expectedAuthor.getBrief());
         assertThat(actualAuthor).isNotNull().usingRecursiveComparison().isEqualTo(expectedAuthor);
     }
 
     @DisplayName("Вернуть всех авторов")
     @Test
     void findAll() {
-        List<Author> authors = dao.findAll();
+        List<Author> authors = repository.findAll();
         assertThat(authors).size().isPositive();
     }
 

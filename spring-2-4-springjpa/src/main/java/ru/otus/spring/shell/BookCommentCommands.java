@@ -49,11 +49,8 @@ public class BookCommentCommands {
 
     @ShellMethod(value = "Delete then comment on the book by id", key = {"bcd", "deleteBookComment"})
     public String deleteBookCommentById(long id) {
-        int rows = bookCommentService.deleteById(id);
-        if (rows == 1)
-            return String.format("Comment on the book with :id was deleted %d%n", id);
-        else
-            return String.format("The comment on the book with id = %d is not found%n", id);
+        bookCommentService.deleteById(id);
+        return String.format("Comment on the book with :id was deleted %d%n", id);
     }
 
     @ShellMethod(value = "Get a comment on the book by id", key = {"bcg", "getBookComment"})
@@ -63,8 +60,8 @@ public class BookCommentCommands {
     }
 
     @ShellMethod(value = "Get a comments on the book by bookId", key = {"bcgi", "getBookCommentByBookId"})
-    public String getBookCommentByBookId(long bookiId) {
-        List<BookComment> bookComments = bookCommentService.getByBookId(bookiId);
+    public String getBookCommentByBookId(long bookId) {
+        List<BookComment> bookComments = bookCommentService.getByBookId(bookId);
         return String.format("%s%n", bookComments);
     }
 

@@ -6,7 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ru.otus.spring.dao.BookDao;
+import ru.otus.spring.dao.BookRepository;
 import ru.otus.spring.domain.Author;
 import ru.otus.spring.domain.Book;
 import ru.otus.spring.domain.Genre;
@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * BookServiceImplTest
@@ -30,7 +30,7 @@ class BookServiceImplTest {
     private static final long EXPECTED_BOOKS_COUNT = 5;
 
     @Mock
-    private BookDao bookDao;
+    private BookRepository bookRepository;
     @InjectMocks
     private BookServiceImpl bookService;
 
@@ -38,7 +38,7 @@ class BookServiceImplTest {
     @Test
     void insert() {
         Book book = createBook();
-        when(bookDao.save(book)).thenReturn(book);
+        when(bookRepository.save(book)).thenReturn(book);
         assertThat(bookService.save(book)).isEqualTo(book.getId());
     }
 
@@ -46,23 +46,22 @@ class BookServiceImplTest {
     @Test
     void update() {
         Book book = createBook();
-        when(bookDao.save(book)).thenReturn(book);
+        when(bookRepository.save(book)).thenReturn(book);
         assertThat(bookService.save(book)).isEqualTo(book.getId());
     }
 
     @DisplayName("Должен удалить книгу по идентификатору")
     @Test
     void deleteById() {
-        final int rows = 1;
-        when(bookDao.deleteById(EXPECTED_BOOK_ID)).thenReturn(rows);
-        assertThat(bookService.deleteById(EXPECTED_BOOK_ID)).isEqualTo(rows);
+        bookService.deleteById(EXPECTED_BOOK_ID);
+        verify(bookRepository, times(1)).deleteById(EXPECTED_BOOK_ID);
     }
 
     @DisplayName("Должен получить книгу по идентификатору")
     @Test
     void getById() {
         Optional<Book> book = Optional.of(createBook());
-        when(bookDao.findById(EXPECTED_BOOK_ID)).thenReturn(book);
+        when(bookRepository.findById(EXPECTED_BOOK_ID)).thenReturn(book);
         assertThat(bookService.getById(EXPECTED_BOOK_ID)).isEqualTo(book);
     }
 
@@ -70,7 +69,7 @@ class BookServiceImplTest {
     @Test
     void getByBrief() {
         Book book = createBook();
-        when(bookDao.findByBrief(book.getBrief())).thenReturn(book);
+        when(bookRepository.findByBrief(book.getBrief())).thenReturn(book);
         assertThat(bookService.getByBrief(book.getBrief())).isEqualTo(book);
     }
 
@@ -78,14 +77,14 @@ class BookServiceImplTest {
     @Test
     void getAll() {
         List<Book> books = List.of(createBook());
-        when(bookDao.findAll()).thenReturn(books);
+        when(bookRepository.findAll()).thenReturn(books);
         assertThat(bookService.getAll()).isEqualTo(books);
     }
 
     @DisplayName("Должен получить количество книг")
     @Test
     void count() {
-        when(bookDao.count()).thenReturn(EXPECTED_BOOKS_COUNT);
+        when(bookRepository.count()).thenReturn(EXPECTED_BOOKS_COUNT);
         assertThat(bookService.count()).isEqualTo(EXPECTED_BOOKS_COUNT);
     }
 

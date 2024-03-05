@@ -12,7 +12,7 @@ public interface GenreService {
 
     long save(Genre genre);
 
-    int deleteById(long id);
+    void deleteById(long id);
 
     Optional<Genre> getById(long id);
 
