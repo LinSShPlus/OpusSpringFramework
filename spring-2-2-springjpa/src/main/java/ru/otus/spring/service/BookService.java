@@ -3,24 +3,23 @@ package ru.otus.spring.service;
 import ru.otus.spring.domain.Book;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * BookService
  **/
 public interface BookService {
 
-    long insert(Book book);
-
-    int update(Book book);
+    long save(Book book);
 
     int deleteById(long id);
 
-    Book getById(long id);
+    Optional<Book> getById(long id);
 
     Book getByBrief(String brief);
 
     List<Book> getAll();
 
-    int count();
+    long count();
 
 }

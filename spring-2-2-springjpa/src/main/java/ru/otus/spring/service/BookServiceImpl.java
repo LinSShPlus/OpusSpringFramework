@@ -6,6 +6,7 @@ import ru.otus.spring.dao.BookDao;
 import ru.otus.spring.domain.Book;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * BookServiceImpl
@@ -17,13 +18,8 @@ public class BookServiceImpl implements BookService {
     private final BookDao bookDao;
 
     @Override
-    public long insert(Book book) {
-        return bookDao.insert(book);
-    }
-
-    @Override
-    public int update(Book book) {
-        return bookDao.update(book);
+    public long save(Book book) {
+        return bookDao.save(book).getId();
     }
 
     @Override
@@ -32,22 +28,22 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Book getById(long id) {
-        return bookDao.getById(id);
+    public Optional<Book> getById(long id) {
+        return bookDao.findById(id);
     }
 
     @Override
     public Book getByBrief(String brief) {
-        return bookDao.getByBrief(brief);
+        return bookDao.findByBrief(brief);
     }
 
     @Override
     public List<Book> getAll() {
-        return bookDao.getAll();
+        return bookDao.findAll();
     }
 
     @Override
-    public int count() {
+    public long count() {
         return bookDao.count();
     }
 

@@ -3,24 +3,23 @@ package ru.otus.spring.dao;
 import ru.otus.spring.domain.Book;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * BookDao
  **/
 public interface BookDao {
 
-    long insert(Book book);
-
-    int update(Book book);
+    Book save(Book book);
 
     int deleteById(long id);
 
-    Book getById(long id);
+    Optional<Book> findById(long id);
 
-    Book getByBrief(String brief);
+    Book findByBrief(String brief);
 
-    List<Book> getAll();
+    List<Book> findAll();
 
-    int count();
+    long count();
 
 }

@@ -1,18 +1,32 @@
 package ru.otus.spring.domain;
 
-import lombok.Builder;
-import lombok.Data;
+import jakarta.persistence.*;
+import lombok.*;
 
 /**
  * Author
  **/
+@ToString
 @Builder
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table(name = "author")
 public class Author {
 
-    private final long id;
-    private final String brief;
-    private final String lastName;
-    private final String firstName;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "brief", nullable = false, unique = true)
+    private String brief;
+
+    @Column(name = "last_name", nullable = false)
+    private String lastName;
+
+    @Column(name = "first_name", nullable = false)
+    private String firstName;
 
 }

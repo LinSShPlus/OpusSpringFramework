@@ -10,6 +10,7 @@ import ru.otus.spring.dao.GenreDao;
 import ru.otus.spring.domain.Genre;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -32,30 +33,31 @@ class GenreServiceImplTest {
     @Test
     void insert() {
         Genre genre = createGenre();
-        when(genreDao.insert(genre)).thenReturn(EXPECTED_GENRE_ID);
-        assertThat(genreService.insert(genre)).isEqualTo(EXPECTED_GENRE_ID);
+        when(genreDao.save(genre)).thenReturn(genre);
+        assertThat(genreService.save(genre)).isEqualTo(EXPECTED_GENRE_ID);
     }
 
     @DisplayName("Должен обновить жанр")
     @Test
     void update() {
         Genre genre = createGenre();
-        when(genreDao.update(genre)).thenReturn(1);
-        assertThat(genreService.update(genre)).isEqualTo(1);
+        when(genreDao.save(genre)).thenReturn(genre);
+        assertThat(genreService.save(genre)).isEqualTo(genre.getId());
     }
 
     @DisplayName("Должен удалить жанр по идентификатору")
     @Test
     void deleteById() {
-        when(genreDao.deleteById(EXPECTED_GENRE_ID)).thenReturn(1);
-        assertThat(genreService.deleteById(EXPECTED_GENRE_ID)).isEqualTo(1);
+        final int rows = 1;
+        when(genreDao.deleteById(EXPECTED_GENRE_ID)).thenReturn(rows);
+        assertThat(genreService.deleteById(EXPECTED_GENRE_ID)).isEqualTo(rows);
     }
 
     @DisplayName("Должен получить жанр по идентификатору")
     @Test
     void getById() {
-        Genre genre = createGenre();
-        when(genreDao.getById(EXPECTED_GENRE_ID)).thenReturn(genre);
+        Optional<Genre> genre = Optional.of(createGenre());
+        when(genreDao.findById(EXPECTED_GENRE_ID)).thenReturn(genre);
         assertThat(genreService.getById(EXPECTED_GENRE_ID)).isEqualTo(genre);
     }
 
@@ -63,7 +65,7 @@ class GenreServiceImplTest {
     @Test
     void getByBrief() {
         Genre genre = createGenre();
-        when(genreDao.getByBrief(genre.getBrief())).thenReturn(genre);
+        when(genreDao.findByBrief(genre.getBrief())).thenReturn(genre);
         assertThat(genreService.getByBrief(genre.getBrief())).isEqualTo(genre);
     }
 
@@ -71,14 +73,14 @@ class GenreServiceImplTest {
     @Test
     void getAll() {
         List<Genre> genres = List.of(createGenre());
-        when(genreDao.getAll()).thenReturn(genres);
+        when(genreDao.findAll()).thenReturn(genres);
         assertThat(genreService.getAll()).isEqualTo(genres);
     }
 
     private Genre createGenre() {
         return Genre
                 .builder()
-                .id(1L)
+                .id(EXPECTED_GENRE_ID)
                 .brief("Programming")
                 .name("Programming")
                 .build();

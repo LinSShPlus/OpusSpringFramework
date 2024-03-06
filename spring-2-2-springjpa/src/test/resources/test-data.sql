@@ -13,12 +13,12 @@ values ('Programming', 'Programming'),
 
 insert into book (brief, title, text, author_id, genre_id)
 select 'Java_Begin', 'Java for Beginners', 'Text of Java for Beginners', a.id, g.id
-  from Author a, Genre g
+  from author a, genre g
  where a.brief = 'Ivanov I.'
    and g.brief = 'Programming'
 union all
 select 'Java_Pro', 'Java for Professional', 'Text of Java for Professional', a.id, g.id
-  from Author a, Genre g
+  from author a, genre g
  where a.brief = 'Petrov V.'
    and g.brief = 'Programming';
 
