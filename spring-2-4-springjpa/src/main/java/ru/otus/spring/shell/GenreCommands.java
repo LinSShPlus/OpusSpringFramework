@@ -47,11 +47,8 @@ public class GenreCommands {
 
     @ShellMethod(value = "Delete then genre by id", key = {"gd", "deleteGenre"})
     public String deleteGenreById(long id) {
-        int rows = genreService.deleteById(id);
-        if (rows == 1)
-            return String.format("Genre with :id was deleted %d%n", id);
-        else
-            return String.format("The genre with id = %d is not found%n", id);
+        genreService.deleteById(id);
+        return String.format("Genre with :id was deleted %d%n", id);
     }
 
     @ShellMethod(value = "Get a genre by id", key = {"gg", "getGenre"})

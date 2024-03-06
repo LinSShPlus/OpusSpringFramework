@@ -12,7 +12,7 @@ public interface BookCommentService {
 
     long save(BookComment bookComment);
 
-    int deleteById(long id);
+    void deleteById(long id);
 
     Optional<BookComment> getById(long id);
 

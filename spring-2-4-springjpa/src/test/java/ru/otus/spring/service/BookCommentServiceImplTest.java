@@ -6,7 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ru.otus.spring.dao.BookCommentDao;
+import ru.otus.spring.dao.BookCommentRepository;
 import ru.otus.spring.domain.Author;
 import ru.otus.spring.domain.Book;
 import ru.otus.spring.domain.BookComment;
@@ -17,7 +17,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * BookCommentServiceImplTest
@@ -32,7 +32,7 @@ class BookCommentServiceImplTest {
     private static final long EXPECTED_GENRE_ID = 1L;
 
     @Mock
-    private BookCommentDao bookCommentDao;
+    private BookCommentRepository bookCommentRepository;
     @InjectMocks
     private BookCommentServiceImpl bookCommentService;
 
@@ -40,7 +40,7 @@ class BookCommentServiceImplTest {
     @Test
     void insert() {
         BookComment bookComment = createBookComment();
-        when(bookCommentDao.save(bookComment)).thenReturn(bookComment);
+        when(bookCommentRepository.save(bookComment)).thenReturn(bookComment);
         assertThat(bookCommentService.save(bookComment)).isEqualTo(bookComment.getId());
     }
 
@@ -48,23 +48,22 @@ class BookCommentServiceImplTest {
     @Test
     void update() {
         BookComment bookComment = createBookComment();
-        when(bookCommentDao.save(bookComment)).thenReturn(bookComment);
+        when(bookCommentRepository.save(bookComment)).thenReturn(bookComment);
         assertThat(bookCommentService.save(bookComment)).isEqualTo(bookComment.getId());
     }
 
     @DisplayName("Должен удалить комментарий к книге по идентификатору")
     @Test
     void deleteById() {
-        final int rows = 1;
-        when(bookCommentDao.deleteById(EXPECTED_BOOK_ID)).thenReturn(rows);
-        assertThat(bookCommentService.deleteById(EXPECTED_BOOK_ID)).isEqualTo(rows);
+        bookCommentService.deleteById(EXPECTED_BOOK_COMMENT_ID);
+        verify(bookCommentRepository, times(1)).deleteById(EXPECTED_BOOK_COMMENT_ID);
     }
 
     @DisplayName("Должен получить комментарий к книге по идентификатору")
     @Test
     void getById() {
         Optional<BookComment> bookComment = Optional.of(createBookComment());
-        when(bookCommentDao.findById(EXPECTED_BOOK_ID)).thenReturn(bookComment);
+        when(bookCommentRepository.findById(EXPECTED_BOOK_ID)).thenReturn(bookComment);
         assertThat(bookCommentService.getById(EXPECTED_BOOK_ID)).isEqualTo(bookComment);
     }
 
@@ -86,7 +85,7 @@ class BookCommentServiceImplTest {
                         .book(book)
                         .build()
         );
-        when(bookCommentDao.findByBookId(anyLong())).thenReturn(bookComments);
+        when(bookCommentRepository.findByBookId(anyLong())).thenReturn(bookComments);
         assertThat(bookCommentService.getByBookId(book.getId())).usingRecursiveComparison().isEqualTo(bookComments);
     }
 

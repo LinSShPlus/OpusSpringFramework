@@ -49,11 +49,8 @@ public class AuthorCommands {
 
     @ShellMethod(value = "Delete then author by id", key = {"ad", "deleteAuthor"})
     public String deleteAuthorById(long id) {
-        int rows = authorService.deleteById(id);
-        if (rows == 1)
-            return String.format("Author with :id was deleted %d%n", id);
-        else
-            return String.format("The author with id = %d is not found%n", id);
+        authorService.deleteById(id);
+        return String.format("Author with :id was deleted %d%n", id);
     }
 
     @ShellMethod(value = "Get a author by id", key = {"ag", "getAuthor"})

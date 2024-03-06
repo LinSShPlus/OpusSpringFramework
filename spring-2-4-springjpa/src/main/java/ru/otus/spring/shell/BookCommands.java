@@ -63,11 +63,8 @@ public class BookCommands {
 
     @ShellMethod(value = "Delete then book by id", key = {"bd", "deleteBook"})
     public String deleteBookById(long id) {
-        int rows = bookService.deleteById(id);
-        if (rows == 1)
-            return String.format("Book with :id was deleted %d%n", id);
-        else
-            return String.format("The book with id = %d is not found%n", id);
+        bookService.deleteById(id);
+        return String.format("Book with :id was deleted %d%n", id);
     }
 
     @ShellMethod(value = "Get a book by id", key = {"bg", "getBook"})

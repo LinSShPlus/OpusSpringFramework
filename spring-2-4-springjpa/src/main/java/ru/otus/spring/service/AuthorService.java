@@ -12,7 +12,7 @@ public interface AuthorService {
 
     long save(Author author);
 
-    int deleteById(long id);
+    void deleteById(long id);
 
     Optional<Author> getById(long id);
 

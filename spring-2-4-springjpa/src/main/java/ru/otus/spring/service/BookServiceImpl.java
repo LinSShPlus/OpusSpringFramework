@@ -2,7 +2,8 @@ package ru.otus.spring.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.otus.spring.dao.BookDao;
+import org.springframework.transaction.annotation.Transactional;
+import ru.otus.spring.dao.BookRepository;
 import ru.otus.spring.domain.Book;
 
 import java.util.List;
@@ -15,36 +16,40 @@ import java.util.Optional;
 @Service
 public class BookServiceImpl implements BookService {
 
-    private final BookDao bookDao;
+    private final BookRepository bookRepository;
 
+    @Transactional
     @Override
     public long save(Book book) {
-        return bookDao.save(book).getId();
+        return bookRepository.save(book).getId();
     }
 
+    @Transactional
     @Override
-    public int deleteById(long id) {
-        return bookDao.deleteById(id);
+    public void deleteById(long id) {
+        bookRepository.deleteById(id);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Optional<Book> getById(long id) {
-        return bookDao.findById(id);
+        return bookRepository.findById(id);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Book getByBrief(String brief) {
-        return bookDao.findByBrief(brief);
+        return bookRepository.findByBrief(brief);
     }
 
     @Override
     public List<Book> getAll() {
-        return bookDao.findAll();
+        return bookRepository.findAll();
     }
 
     @Override
     public long count() {
-        return bookDao.count();
+        return bookRepository.count();
     }
 
 }

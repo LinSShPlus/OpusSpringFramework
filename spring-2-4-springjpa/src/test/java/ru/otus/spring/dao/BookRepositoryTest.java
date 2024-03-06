@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
 import ru.otus.spring.domain.Author;
 import ru.otus.spring.domain.Book;
@@ -17,13 +16,12 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * BookDaoJpaTest
+ * BookRepositoryTest
  **/
-@DisplayName("Класс BookDaoJpa")
+@DisplayName("Класс BookRepository")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @DataJpaTest
-@Import(BookDaoJpa.class)
-class BookDaoJpaTest {
+class BookRepositoryTest {
 
     private static final long EXPECTED_BOOK_ID = 1L;
 
@@ -31,7 +29,7 @@ class BookDaoJpaTest {
     private static final long EXPECTED_GENRE_ID = 1L;
 
     @Autowired
-    private BookDaoJpa dao;
+    private BookRepository repository;
 
     @Autowired
     private TestEntityManager em;
@@ -40,7 +38,7 @@ class BookDaoJpaTest {
     @Test
     void insert() {
         Book book = getNewBook();
-        Long id = dao.save(book).getId();
+        Long id = repository.save(book).getId();
         assertThat(id).isNotNull().isPositive();
     }
 
@@ -48,22 +46,24 @@ class BookDaoJpaTest {
     @Test
     void update() {
         Book expectedBook = getExpectedBook();
-        Book actualBook = dao.save(expectedBook);
+        Book actualBook = repository.save(expectedBook);
         assertThat(actualBook).usingRecursiveComparison().isEqualTo(expectedBook);
     }
 
     @DisplayName("Удалить книгу по идентификатору")
     @Test
     void deleteById() {
-        int rows = dao.deleteById(EXPECTED_BOOK_ID);
-        assertThat(rows).isEqualTo(1);
+        repository.deleteById(EXPECTED_BOOK_ID);
+        em.flush();
+        Book actualBook = em.find(Book.class, EXPECTED_BOOK_ID);
+        assertThat(actualBook).isNull();
     }
 
     @DisplayName("Вернуть книгу по идентификатору")
     @Test
     void findById() {
         Book expectedBook = getExpectedBook();
-        Optional<Book> optionalActualBook = dao.findById(expectedBook.getId());
+        Optional<Book> optionalActualBook = repository.findById(expectedBook.getId());
         assertThat(optionalActualBook).isPresent().usingRecursiveComparison().isEqualTo(Optional.of(expectedBook));
     }
 
@@ -71,21 +71,21 @@ class BookDaoJpaTest {
     @Test
     void findByBrief() {
         Book expectedBook = getExpectedBook();
-        Book actualBook = dao.findByBrief(expectedBook.getBrief());
+        Book actualBook = repository.findByBrief(expectedBook.getBrief());
         assertThat(actualBook).isNotNull().usingRecursiveComparison().isEqualTo(expectedBook);
     }
 
     @DisplayName("Вернуть все книги")
     @Test
     void findAll() {
-        List<Book> books = dao.findAll();
-        assertThat(books).size().isEqualTo(dao.count());
+        List<Book> books = repository.findAll();
+        assertThat(books).size().isEqualTo(repository.count());
     }
 
     @DisplayName("Вернуть количество книг")
     @Test
     void count() {
-        long count = dao.count();
+        long count = repository.count();
         assertThat(count).isPositive();
     }
 
