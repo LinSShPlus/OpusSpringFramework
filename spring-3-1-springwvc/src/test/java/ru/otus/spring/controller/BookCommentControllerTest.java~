@@ -1,0 +1,132 @@
+package ru.otus.spring.controller;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import ru.otus.spring.domain.Book;
+import ru.otus.spring.domain.BookComment;
+import ru.otus.spring.service.BookCommentService;
+import ru.otus.spring.service.BookService;
+
+import java.util.List;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+/**
+ * BookCommentControllerTest
+ **/
+@DisplayName("Класс BookCommentControllerTest")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@SpringBootTest
+@AutoConfigureMockMvc
+@ActiveProfiles("test")
+public class BookCommentControllerTest {
+
+    private static final long EXPECTED_BOOK_COMMENT_ID = 1L;
+    private static final long EXPECTED_BOOK_ID = 1L;
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @Autowired
+    private BookCommentService bookCommentService;
+
+    @Autowired
+    private BookService bookService;
+
+    @DisplayName("Должен добавить комментарий к книге")
+    @Test
+    void saveBookComment() throws Exception {
+        BookComment bookComment = createBookComment(true);
+        String content = objectMapper.writeValueAsString(bookComment);
+
+        MvcResult mvcResult = mockMvc.perform(post("/api/bookcomment")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(content)
+        ).andExpect(status().isOk()).andReturn();
+
+        String receive = mvcResult.getResponse().getContentAsString();
+        BookComment actualBookComment = objectMapper.readValue(receive, BookComment.class);
+        assertThat(actualBookComment).isNotNull();
+        assertThat(actualBookComment.getId()).isNotNull().isPositive();
+    }
+
+    @DisplayName("Должен изменить комментарий к книге")
+    @Test
+    void updateBookComment() throws Exception {
+        BookComment bookComment = createBookComment(false);
+        String content = objectMapper.writeValueAsString(bookComment);
+
+        MvcResult mvcResult = mockMvc.perform(put("/api/bookcomment/{id}", bookComment.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(content)
+        ).andExpect(status().isOk()).andReturn();
+
+        String receive = mvcResult.getResponse().getContentAsString();
+        BookComment actualBookComment = objectMapper.readValue(receive, BookComment.class);
+        assertThat(actualBookComment).isNotNull();
+        assertThat(actualBookComment.getId()).isNotNull().isPositive();
+        assertThat(actualBookComment).usingRecursiveComparison().isEqualTo(bookComment);
+    }
+
+    @DisplayName("Должен удалить комментарий к книге по идентификатору")
+    @Test
+    void deleteBookCommentById() throws Exception {
+        final long id = EXPECTED_BOOK_COMMENT_ID;
+        mockMvc.perform(delete("/api/bookcomment/{id}", id))
+                .andExpect(status().isOk()).andReturn();
+
+        Optional<BookComment> actualBookComment = bookCommentService.getById(id);
+        assertThat(actualBookComment).isEmpty();
+    }
+
+    @DisplayName("Должен получить комментарий к книге по идентификатору")
+    @Test
+    void getBookCommentById() throws Exception {
+        MvcResult mvcResult = mockMvc.perform(get("/api/bookcomment/{id}", EXPECTED_BOOK_COMMENT_ID))
+                .andExpect(status().isOk()).andReturn();
+
+        String receive = mvcResult.getResponse().getContentAsString();
+        BookComment actualBookComment = objectMapper.readValue(receive, BookComment.class);
+        assertThat(actualBookComment).isNotNull();
+        assertThat(actualBookComment.getId()).isNotNull().isPositive();
+    }
+
+    @DisplayName("Должен получить все комментарии к книге по идентификатору книги")
+    @Test
+    void getAllBookComments() throws Exception {
+        MvcResult mvcResult = mockMvc.perform(get("/api/bookcomment/search")
+                .param("bookId", Long.toString(EXPECTED_BOOK_ID))
+        ).andExpect(status().isOk()).andReturn();
+
+        String receive = mvcResult.getResponse().getContentAsString();
+        List<BookComment> actualBookCommentList = objectMapper.readValue(receive, new TypeReference<>() {});
+        assertThat(actualBookCommentList).isNotNull().isNotEmpty();
+    }
+
+    private BookComment createBookComment(boolean isNew) {
+        Book book = bookService.getById(EXPECTED_BOOK_ID).orElse(null);
+        return BookComment
+                .builder()
+                .id(isNew ? null : EXPECTED_BOOK_COMMENT_ID)
+                .book(book)
+                .comment("Test comment")
+                .build();
+    }
+
+}
