@@ -21,6 +21,7 @@
         <module>spring-2-2-springjpa</module>
         <module>spring-2-4-springjpa</module>
         <module>spring-3-1-springwvc</module>
+        <module>spring-3-4-springwvc</module>
     </modules>
 
     <properties>
