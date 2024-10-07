@@ -34,3 +34,8 @@ union all
 select b.id, 'On the whole the book is good. It is worth reading.'
   from Book b
  where b.brief = 'Java_Pro';
+
+insert into "user" (login, password, enabled)
+select 'admin', 'ADMIN', '$2a$10$XbjcYrj.Qz3Qm7DgWw4G0evjM29v4rSXjxfx1KtU62joHMTGeyfUu', true
+union all
+select 'user', 'USER', '$2a$10$XbjcYrj.Qz3Qm7DgWw4G0evjM29v4rSXjxfx1KtU62joHMTGeyfUu', true

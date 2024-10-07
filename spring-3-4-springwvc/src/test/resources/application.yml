@@ -1,7 +1,7 @@
 spring:
   datasource:
     url: jdbc:h2:mem:testdb
-    data: test-data.sql
+    data: classpath:test-data.sql
     initialization-mode: always
   jpa:
     generate-ddl: false
