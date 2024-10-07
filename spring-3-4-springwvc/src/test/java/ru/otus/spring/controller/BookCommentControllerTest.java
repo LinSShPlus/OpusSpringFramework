@@ -2,6 +2,7 @@ package ru.otus.spring.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,8 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 import ru.otus.spring.domain.Book;
 import ru.otus.spring.domain.BookComment;
 import ru.otus.spring.service.BookCommentService;
@@ -38,6 +41,8 @@ public class BookCommentControllerTest {
     private static final long EXPECTED_BOOK_ID = 1L;
 
     @Autowired
+    private WebApplicationContext context;
+
     private MockMvc mockMvc;
 
     @Autowired
@@ -48,6 +53,13 @@ public class BookCommentControllerTest {
 
     @Autowired
     private BookService bookService;
+
+    @BeforeEach
+    void setup() {
+        mockMvc = MockMvcBuilders
+                .webAppContextSetup(context)
+                .build();
+    }
 
     @DisplayName("Должен добавить комментарий к книге")
     @Test
