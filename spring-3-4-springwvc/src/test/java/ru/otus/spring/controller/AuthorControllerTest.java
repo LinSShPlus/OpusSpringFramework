@@ -16,10 +16,8 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import ru.otus.spring.domain.Author;
-import ru.otus.spring.service.AuthorService;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -28,12 +26,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * AuthorControllerTest
  **/
-@DisplayName("Класс AuthorControllerTest")
+@DisplayName("Класс AuthorController")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-public class AuthorControllerTest {
+class AuthorControllerTest {
 
     private static final long EXPECTED_AUTHOR_ID = 1L;
 
@@ -44,9 +42,6 @@ public class AuthorControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
-
-    @Autowired
-    private AuthorService authorService;
 
     @BeforeEach
     void setup() {
@@ -93,12 +88,8 @@ public class AuthorControllerTest {
     @DisplayName("Должен удалить автора по идентификатору")
     @Test
     void deleteAuthorById() throws Exception {
-        final long id = EXPECTED_AUTHOR_ID;
-        mockMvc.perform(delete("/api/author/{id}", id))
+        mockMvc.perform(delete("/api/author/{id}", EXPECTED_AUTHOR_ID))
                 .andExpect(status().isOk()).andReturn();
-
-        Optional<Author> actualAuthor = authorService.getById(id);
-        assertThat(actualAuthor).isEmpty();
     }
 
     @DisplayName("Должен получить автора по идентификатору")

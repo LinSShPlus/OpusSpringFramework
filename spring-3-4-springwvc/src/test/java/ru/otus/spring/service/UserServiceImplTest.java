@@ -20,7 +20,7 @@ import static org.mockito.Mockito.*;
  **/
 @DisplayName("Класс UserServiceImpl")
 @ExtendWith(MockitoExtension.class)
-public class UserServiceImplTest {
+class UserServiceImplTest {
 
     private static final long EXPECTED_USER_ID = 1L;
 

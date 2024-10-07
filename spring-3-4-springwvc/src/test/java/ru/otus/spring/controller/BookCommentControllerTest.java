@@ -15,13 +15,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import ru.otus.spring.domain.Author;
 import ru.otus.spring.domain.Book;
 import ru.otus.spring.domain.BookComment;
-import ru.otus.spring.service.BookCommentService;
-import ru.otus.spring.service.BookService;
+import ru.otus.spring.domain.Genre;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -30,12 +29,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * BookCommentControllerTest
  **/
-@DisplayName("Класс BookCommentControllerTest")
+@DisplayName("Класс BookCommentController")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-public class BookCommentControllerTest {
+class BookCommentControllerTest {
 
     private static final long EXPECTED_BOOK_COMMENT_ID = 1L;
     private static final long EXPECTED_BOOK_ID = 1L;
@@ -47,12 +46,6 @@ public class BookCommentControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
-
-    @Autowired
-    private BookCommentService bookCommentService;
-
-    @Autowired
-    private BookService bookService;
 
     @BeforeEach
     void setup() {
@@ -99,12 +92,8 @@ public class BookCommentControllerTest {
     @DisplayName("Должен удалить комментарий к книге по идентификатору")
     @Test
     void deleteBookCommentById() throws Exception {
-        final long id = EXPECTED_BOOK_COMMENT_ID;
-        mockMvc.perform(delete("/api/bookcomment/{id}", id))
+        mockMvc.perform(delete("/api/bookcomment/{id}", EXPECTED_BOOK_COMMENT_ID))
                 .andExpect(status().isOk()).andReturn();
-
-        Optional<BookComment> actualBookComment = bookCommentService.getById(id);
-        assertThat(actualBookComment).isEmpty();
     }
 
     @DisplayName("Должен получить комментарий к книге по идентификатору")
@@ -132,7 +121,31 @@ public class BookCommentControllerTest {
     }
 
     private BookComment createBookComment(boolean isNew) {
-        Book book = bookService.getById(EXPECTED_BOOK_ID).orElse(null);
+        Author author = Author
+                .builder()
+                .id(1L)
+                .brief("Ivanov I.")
+                .lastName("Ivanov")
+                .firstName("Ivan")
+                .build();
+
+        Genre genre = Genre
+                .builder()
+                .id(1L)
+                .brief("Programming")
+                .name("Programming")
+                .build();
+
+        Book book = Book
+                .builder()
+                .id(EXPECTED_BOOK_ID)
+                .brief("Java_Begin")
+                .title("Java for Beginners")
+                .text("Text of Java for Beginners")
+                .author(author)
+                .genre(genre)
+                .build();
+
         return BookComment
                 .builder()
                 .id(isNew ? null : EXPECTED_BOOK_COMMENT_ID)

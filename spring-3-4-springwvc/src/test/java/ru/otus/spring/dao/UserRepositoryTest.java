@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("Класс UserRepository")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @DataJpaTest
-public class UserRepositoryTest {
+class UserRepositoryTest {
 
     private static final long EXPECTED_USER_ID = 1L;
 

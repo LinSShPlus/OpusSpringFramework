@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-public class DomainUserDetailsServiceTest {
+class DomainUserDetailsServiceTest {
 
     private static final String USER_VALID_LOGIN = "admin";
     private static final String USER_INVALID_LOGIN = "demo";
