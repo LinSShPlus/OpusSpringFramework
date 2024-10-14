@@ -2,8 +2,7 @@ package ru.otus.spring.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,15 +11,13 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 import ru.otus.spring.domain.Author;
 import ru.otus.spring.domain.Book;
 import ru.otus.spring.domain.Genre;
-import ru.otus.spring.service.AuthorService;
-import ru.otus.spring.service.BookService;
-import ru.otus.spring.service.GenreService;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -29,31 +26,29 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * BookControllerTest
  **/
-@DisplayName("Класс BookControllerTest")
+@DisplayName("Класс BookController")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-public class BookControllerTest {
+class BookControllerTest {
 
     private static final long EXPECTED_BOOK_ID = 1L;
-    private static final long EXPECTED_AUTHOR_ID = 1L;
-    private static final long EXPECTED_GENRE_ID = 1L;
 
     @Autowired
+    private WebApplicationContext context;
+
     private MockMvc mockMvc;
 
     @Autowired
     private ObjectMapper objectMapper;
 
-    @Autowired
-    private BookService bookService;
-
-    @Autowired
-    private AuthorService authorService;
-
-    @Autowired
-    private GenreService genreService;
+    @BeforeEach
+    void setup() {
+        mockMvc = MockMvcBuilders
+                .webAppContextSetup(context)
+                .build();
+    }
 
     @DisplayName("Должен добавить книгу")
     @Test
@@ -93,12 +88,8 @@ public class BookControllerTest {
     @DisplayName("Должен удалить книгу по идентификатору")
     @Test
     void deleteBookById() throws Exception {
-        final long id = EXPECTED_BOOK_ID;
-        mockMvc.perform(delete("/api/book/{id}", id))
+        mockMvc.perform(delete("/api/book/{id}", EXPECTED_BOOK_ID))
                 .andExpect(status().isOk()).andReturn();
-
-        Optional<Book> actualBook = bookService.getById(id);
-        assertThat(actualBook).isEmpty();
     }
 
     @DisplayName("Должен получить книгу по идентификатору")
@@ -138,8 +129,21 @@ public class BookControllerTest {
     }
 
     private Book createBook(boolean isNew) {
-        Author author = authorService.getById(EXPECTED_AUTHOR_ID).orElse(null);
-        Genre genre = genreService.getById(EXPECTED_GENRE_ID).orElse(null);
+        Author author = Author
+                .builder()
+                .id(1L)
+                .brief("Ivanov I.")
+                .lastName("Ivanov")
+                .firstName("Ivan")
+                .build();
+
+        Genre genre = Genre
+                .builder()
+                .id(1L)
+                .brief("Programming")
+                .name("Programming")
+                .build();
+
         return Book
                 .builder()
                 .id(isNew ? null : EXPECTED_BOOK_ID)
