@@ -41,6 +41,9 @@ class GenreControllerTest {
     private MockMvc mockMvc;
 
     @Autowired
+    private MockMvc mockMvcAccess;
+
+    @Autowired
     private ObjectMapper objectMapper;
 
     @BeforeEach
@@ -126,6 +129,13 @@ class GenreControllerTest {
         String receive = mvcResult.getResponse().getContentAsString();
         List<Genre> actualGenreList = objectMapper.readValue(receive, new TypeReference<>() {});
         assertThat(actualGenreList).isNotNull().isNotEmpty();
+    }
+
+    @DisplayName("Не должен получить жанры без авторизации")
+    @Test
+    void notAccessAuthor() throws Exception {
+        mockMvcAccess.perform(get("/api/genre"))
+                .andExpect(status().isUnauthorized());
     }
 
     private Genre createGenre(boolean isNew) {

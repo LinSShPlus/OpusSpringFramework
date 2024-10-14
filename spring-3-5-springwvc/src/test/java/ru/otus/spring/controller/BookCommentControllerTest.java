@@ -45,6 +45,9 @@ class BookCommentControllerTest {
     private MockMvc mockMvc;
 
     @Autowired
+    private MockMvc mockMvcAccess;
+
+    @Autowired
     private ObjectMapper objectMapper;
 
     @BeforeEach
@@ -118,6 +121,13 @@ class BookCommentControllerTest {
         String receive = mvcResult.getResponse().getContentAsString();
         List<BookComment> actualBookCommentList = objectMapper.readValue(receive, new TypeReference<>() {});
         assertThat(actualBookCommentList).isNotNull().isNotEmpty();
+    }
+
+    @DisplayName("Не должен получить комментарии к книге без авторизации")
+    @Test
+    void notAccessAuthor() throws Exception {
+        mockMvcAccess.perform(get("/api/bookcomment"))
+                .andExpect(status().isUnauthorized());
     }
 
     private BookComment createBookComment(boolean isNew) {

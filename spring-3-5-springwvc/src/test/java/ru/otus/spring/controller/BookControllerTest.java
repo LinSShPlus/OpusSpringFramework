@@ -41,6 +41,9 @@ class BookControllerTest {
     private MockMvc mockMvc;
 
     @Autowired
+    private MockMvc mockMvcAccess;
+
+    @Autowired
     private ObjectMapper objectMapper;
 
     @BeforeEach
@@ -126,6 +129,13 @@ class BookControllerTest {
         String receive = mvcResult.getResponse().getContentAsString();
         List<Book> actualBookList = objectMapper.readValue(receive, new TypeReference<>() {});
         assertThat(actualBookList).isNotNull().isNotEmpty();
+    }
+
+    @DisplayName("Не должен получить книги без авторизации")
+    @Test
+    void notAccessBook() throws Exception {
+        mockMvcAccess.perform(get("/api/book"))
+                .andExpect(status().isUnauthorized());
     }
 
     private Book createBook(boolean isNew) {

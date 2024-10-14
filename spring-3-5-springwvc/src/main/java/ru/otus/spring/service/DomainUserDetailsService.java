@@ -27,6 +27,7 @@ public class DomainUserDetailsService implements UserDetailsService {
                 .withUsername(username)
                 .password(user.getPassword())
                 .roles(user.getRole())
+                .disabled(!user.isEnabled())
                 .build();
     }
 
