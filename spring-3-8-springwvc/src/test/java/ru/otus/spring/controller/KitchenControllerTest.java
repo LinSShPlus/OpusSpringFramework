@@ -23,7 +23,6 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class KitchenControllerTest {
 
-    //@Autowired
     @Mock
     private KitchenGateway kitchenGateway;
 
@@ -32,7 +31,7 @@ class KitchenControllerTest {
 
     @DisplayName("Заказ с выбранной едой и соусом")
     @Test
-    void getFoodWithSauce_ValidOrder_FoodAndSauceBriefs() throws Exception {
+    void getFoodWithSauce_ValidOrder_FoodAndSauceBriefs() {
         Order order = new Order("foodBrief", "sauceBrief", false);
         Food food = createFood();
         Sauce sauce = createSauce();
