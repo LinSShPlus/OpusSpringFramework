@@ -41,6 +41,9 @@ class AuthorControllerTest {
     private MockMvc mockMvc;
 
     @Autowired
+    private MockMvc mockMvcAccess;
+
+    @Autowired
     private ObjectMapper objectMapper;
 
     @BeforeEach
@@ -126,6 +129,13 @@ class AuthorControllerTest {
         String receive = mvcResult.getResponse().getContentAsString();
         List<Author> actualAuthorList = objectMapper.readValue(receive, new TypeReference<>() {});
         assertThat(actualAuthorList).isNotNull().isNotEmpty();
+    }
+
+    @DisplayName("Не должен получить авторов без авторизации")
+    @Test
+    void notAccessAuthor() throws Exception {
+        mockMvcAccess.perform(get("/api/author"))
+                .andExpect(status().isUnauthorized());
     }
 
     private Author createAuthor(boolean isNew) {

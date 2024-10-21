@@ -39,3 +39,5 @@ insert into "user" (login, password, enabled)
 select 'admin', 'ADMIN', '$2a$10$XbjcYrj.Qz3Qm7DgWw4G0evjM29v4rSXjxfx1KtU62joHMTGeyfUu', true
 union all
 select 'user', 'USER', '$2a$10$XbjcYrj.Qz3Qm7DgWw4G0evjM29v4rSXjxfx1KtU62joHMTGeyfUu', true
+union all
+select 'test', 'USER', '$2a$10$XbjcYrj.Qz3Qm7DgWw4G0evjM29v4rSXjxfx1KtU62joHMTGeyfUu', false
