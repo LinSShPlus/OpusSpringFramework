@@ -1,0 +1,16 @@
+server:
+  port: 8081
+
+application:
+  kafka:
+    topic: "library"
+
+spring:
+  kafka:
+    consumer:
+      group-id: "library"
+      bootstrap-servers: "localhost:9092"
+      client-id: "library-consumer"
+      auto-offset-reset: earliest
+      properties:
+        spring.json.trusted.packages: "*"
