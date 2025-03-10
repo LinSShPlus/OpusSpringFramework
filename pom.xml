@@ -26,6 +26,7 @@
         <module>spring-3-8-springwvc</module>
         <module>spring-4-1-springsba</module>
         <module>spring-4-2-springrest</module>
+        <module>spring-4-3-springdocker</module>
     </modules>
 
     <properties>
