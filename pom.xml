@@ -28,6 +28,7 @@
         <module>spring-4-2-springrest</module>
         <module>spring-4-3-springdocker</module>
         <module>spring-4-4-springkafka</module>
+        <module>spring-4-7-springhystrix</module>
     </modules>
 
     <properties>
